@@ -1,0 +1,15 @@
+[BUNDLES]
+bundle_info = ['CST']
+scalars = ['dki_fa', 'dki_md', 'dki_mk', 'dti_fa', 'dti_md']
+[REGISTRATION]
+mapping = "FnirtMap('warp', 'MNI', {'scope': 'TBSS'}, {'scope': 'TBSS'})"
+[TRACTOGRAPHY]
+seed_mask = "RoiMask()"
+[CLEANING]
+n_points = 100
+clean_rounds = 3
+distance_threshold = 3
+length_threshold = 3
+[BIDS]
+custom_tractography_bids_filters = "{'suffix': 'gputractography', 'scope': 'gpu'}"
+

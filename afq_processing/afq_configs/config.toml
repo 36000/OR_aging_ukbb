@@ -1,0 +1,45 @@
+[BUNDLES]
+bundle_info = """
+{'L_OR': {
+    'ROIs': [
+        "output/AFQ_data/visual/left_OR_1.nii.gz",
+        "output/AFQ_data/visual/left_OR_2.nii.gz",
+        "output/AFQ_data/visual/left_OP_MNI.nii.gz"],
+    'rules': [True, True, False],
+    'additional_tolerance': [0, 0, 0],
+    'cross_midline': False,
+    'uid': 1
+}, 'R_OR': {
+    'ROIs': [
+        "output/AFQ_data/visual/right_OR_1.nii.gz",
+        "output/AFQ_data/visual/right_OR_2.nii.gz",
+        "output/AFQ_data/visual/right_OP_MNI.nii.gz"],
+    'rules': [True, True, False],
+    'additional_tolerance': [0, 0, 0],
+    'cross_midline': False,
+    'uid': 2
+}}"""
+scalars = ['dki_fa', 'dki_md', 'dki_mk', 'dti_fa', 'dti_md']
+[REGISTRATION]
+mapping = "FnirtMap('warp', 'MNI', {'scope': 'TBSS'}, {'scope': 'TBSS'})"
+[TRACTOGRAPHY]
+seed_mask = "RoiMask()"
+[SEGMENTATION]
+dist_to_atlas = 3
+endpoint_info = """
+{
+    "L_OR": {
+        "startpoint": nib.load('output/AFQ_data/visual/left_thal_MNI.nii.gz'),
+        "endpoint": nib.load('output/AFQ_data/visual/left_V1_MNI.nii.gz')},
+    "R_OR": {
+        "startpoint": nib.load('output/AFQ_data/visual/right_thal_MNI.nii.gz'),
+        "endpoint": nib.load('output/AFQ_data/visual/right_V1_MNI.nii.gz')}}"""
+dist_to_waypoint = 3
+[CLEANING]
+n_points = 100
+clean_rounds = 3
+distance_threshold = 3
+length_threshold = 3
+[BIDS]
+custom_tractography_bids_filters = "{'suffix': 'gputractography', 'scope': 'gpu'}"
+
