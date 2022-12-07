@@ -12,7 +12,7 @@ Then run gen_pheno.py , modified to point to your UKBB csv file
 
 For figure 1: first_paper_plots/pheno_histograms.py
 
-For figure 2: TODO
+For figure 2: see README in first_paper_plots/figure2
 
 For figure 3: first_paper_plots/bundle_missingness.py
 
