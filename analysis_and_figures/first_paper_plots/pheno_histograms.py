@@ -6,11 +6,22 @@ from altair_transform import transform_chart
 
 pheno = pd.read_csv("output/pheno.csv", low_memory=False)
 
+profile = pd.read_csv("output/tract_profiles_wide.csv", low_memory=False)
+low_node = 20
+high_node = 80
+profile = profile[(profile.nodeID >= low_node) & (profile.nodeID < high_node)]
+print(len(profile)//60)
 pheno = pheno[
     (pheno["6148-2.0"] == -7)
     | (pheno["6148-3.0"] == -7)]
-
-profile = pd.read_csv("output/tract_profiles_wide.csv", low_memory=False)
+profile = profile[profile.subjectID.isin(pheno.eid.unique())]
+print(len(profile)//60)
+pheno = pheno[(
+    ((pheno["5208-0.0"] <= 0.3) & (pheno["5201-0.0"] <= 0.3)) |
+    ((pheno["5208-1.0"] <= 0.3) & (pheno["5201-1.0"] <= 0.3)))]
+profile = profile[profile.subjectID.isin(pheno.eid.unique())]
+print(len(profile)//60)
+profile.to_csv("output/tract_profiles_filt.csv")
 
 spec_pheno = pd.DataFrame()
 

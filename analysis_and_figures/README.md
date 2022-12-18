@@ -18,7 +18,7 @@ For figure 3: first_paper_plots/bundle_missingness.py
 
 For profile plots (figures 4-8):
 
-    First run first_paper_plots/make_wide_profiles.py
+    First run first_paper_plots/wide_to_aci.py
 
     Then:
 
@@ -34,7 +34,7 @@ For profile plots (figures 4-8):
 
 For profile plots only using subjects with all bundles found:
 
-    First run first_paper_plots/make_wide_profiles.py with only_all_bundles=True
+    First run first_paper_plots/wide_to_aci.py with only_all_bundles=True
 
     Then:
 

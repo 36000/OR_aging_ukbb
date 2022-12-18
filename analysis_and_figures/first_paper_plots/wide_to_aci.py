@@ -7,6 +7,16 @@ from tqdm import tqdm
 import scipy.stats as st
 from itertools import product
 
+
+# for paper 2:
+# dataset = "ukbb"
+# use_age_bin = True
+# use_another_bin = "glauc"
+# filt = False
+# low_node = 20
+# high_node = 80
+# only_all_bundles = False
+
 # for paper 1:
 dataset = "ukbb"
 use_age_bin = True
@@ -70,9 +80,9 @@ if filt:
     print(f"To start: {len(dataframe)//60}")
     dataframe = dataframe[dataframe.subjectID.isin(pheno.eid.unique())]
     print(f"After filtering to self-ID'd healthy eyes: {len(dataframe)//60}")
-    pheno = pheno[~(
-        (pheno["5208-0.0"] >= 0.3) | (pheno["5201-0.0"] >= 0.3) |
-        (pheno["5208-1.0"] >= 0.3) | (pheno["5201-1.0"] >= 0.3))]
+    pheno = pheno[(
+        ((pheno["5208-0.0"] <= 0.3) & (pheno["5201-0.0"] <= 0.3)) |
+        ((pheno["5208-1.0"] <= 0.3) & (pheno["5201-1.0"] <= 0.3)))]
     dataframe = dataframe[dataframe.subjectID.isin(pheno.eid.unique())]
     print(f"After filtering to logmar<0.3: {len(dataframe)//60}")
 
@@ -84,12 +94,14 @@ if only_all_bundles:
 
 if "acuity_l" in dataframe:
     dataframe = dataframe[~np.isnan(dataframe.acuity_l)]
-    #for acuity_bin in [(None, -0.15), (-0.15, -0.1), (-0.1, 0.0), (0.0, 0.1), (0.1, None)]:
-    for acuity_bin in [(None, 0.3), (0.3, None)]:
+    bin_split = np.median(dataframe.acuity_l.to_numpy())
+    bin_split = round(bin_split, 2)
+    print(f"logMAR split: {bin_split}")
+    for acuity_bin in [(None, bin_split), (bin_split, None)]:
         if acuity_bin[0] is None:
-            dataframe.loc[dataframe.acuity_l < acuity_bin[1], "acuity_l"] = -0.2
+            dataframe.loc[dataframe.acuity_l <= acuity_bin[1], "acuity_l"] = -1
         elif acuity_bin[1] is None:
-            dataframe.loc[dataframe.acuity_l >= acuity_bin[0], "acuity_l"] = acuity_bin[0]
+            dataframe.loc[dataframe.acuity_l > acuity_bin[0], "acuity_l"] = 1
         else:
             dataframe.loc[
                 (dataframe.acuity_l < acuity_bin[1]) &
@@ -98,7 +110,7 @@ if "acuity_l" in dataframe:
     #     -0.2:"-0.34,-0.15", -0.15:"-0.15,-0.1",
     #     -0.1:"-0.1,0.0", 0.0:"0.0,0.1", 0.1:"0.1,1.2"}, inplace=True)
     dataframe.acuity_l.replace({
-        -0.2:"-0.34,0.3", 0.3:"0.3,1.2"}, inplace=True)
+        -1:f"Low logMAR (<={bin_split})", 1:f"High logMAR (>{bin_split})"}, inplace=True)
 
 dis_sub_dict = {
     "glauc": "output/pos_glauc_sub.txt"

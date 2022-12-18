@@ -1,14 +1,11 @@
 import pandas as pd
 import altair as alt
+import numpy as np
 
-low_node = 20
-high_node = 80
 font_size = 20
 
-dataframe = pd.read_csv("output/tract_profiles_wide.csv")
+dataframe = pd.read_csv("output/tract_profiles_filt.csv")
 bundles = ["UNC_L", "UNC_R", "CST_L", "CST_R", "fov_L", "fov_R",  "mac_L", "mac_R", "periph_L", "periph_R"]
-
-dataframe = dataframe[(dataframe.nodeID >= low_node) & (dataframe.nodeID < high_node)]
 
 age_bins = list(dataframe["age_bin"].unique())
 
@@ -39,19 +36,6 @@ hemi_names_formal = {
     "UNC_L": "Left",
     "UNC_R": "Right"
 }
-
-pheno = pd.read_csv("output/pheno.csv", low_memory=False)
-print(len(dataframe)//60)
-pheno = pheno[
-    (pheno["6148-2.0"] == -7)
-    | (pheno["6148-3.0"] == -7)]
-dataframe = dataframe[dataframe.subjectID.isin(pheno.eid.unique())]
-print(len(dataframe)//60)
-pheno = pheno[~(
-    (pheno["5208-0.0"] >= 0.3) | (pheno["5201-0.0"] >= 0.3) |
-    (pheno["5208-1.0"] >= 0.3) | (pheno["5201-1.0"] >= 0.3))]
-dataframe = dataframe[dataframe.subjectID.isin(pheno.eid.unique())]
-print(len(dataframe)//60)
 
 dataframe = dataframe[dataframe["nodeID"] == 49]
 

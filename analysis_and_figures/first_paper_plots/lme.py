@@ -11,9 +11,8 @@ import statsmodels.api as sm
 font_size = 15
 
 n_boot = 1000
-tp = pd.read_csv("/output/tract_profiles_wide.csv")
-tp = tp[(tp.nodeID >= 20) & (tp.nodeID < 80)]
-do_oab = False
+tp = pd.read_csv("/output/tract_profiles_filt.csv")
+do_oab = True
 
 bundle_names_formal = {
     "fov_L": "Fov. OR left",
@@ -39,24 +38,13 @@ c_range=[
     '#FA6161', '#FA6162',
     '#071bf5', '#071bf6', '#26d9fc', '#26d9fd']
 
-pheno = pd.read_csv("output/pheno.csv", low_memory=False)
-pheno = pheno[
-    (pheno["6148-2.0"] == -7)
-    | (pheno["6148-3.0"] == -7)]
-print(f"To start: {len(tp)//60}")
-tp = tp[tp.subjectID.isin(pheno.eid.unique())]
-print(f"After filtering to self-ID'd healthy eyes: {len(tp)//60}")
-pheno = pheno[~(
-    (pheno["5208-0.0"] >= 0.3) | (pheno["5201-0.0"] >= 0.3) |
-    (pheno["5208-1.0"] >= 0.3) | (pheno["5201-1.0"] >= 0.3))]
-tp = tp[tp.subjectID.isin(pheno.eid.unique())]
-print(f"After filtering to logmar<0.3: {len(tp)//60}")
 if do_oab:
     do_oab_suffix = "_oab"
     for bundle in bundle_names_formal.keys():
         tp = tp[~tp[f'dki_fa_{bundle}'].isna()]
     print(f"After filtering to all bundles found: {len(tp)//60}")
 else:
+    print(f"Number of subjects: {len(tp)//60}")
     do_oab_suffix = "" 
 
 def to_long(to_df, for_save=False):
@@ -94,7 +82,7 @@ def to_long(to_df, for_save=False):
                     })], ignore_index=True)
     return new_df
 
-if False or not op.exists(f"/output/long_tract_profiles{do_oab_suffix}.csv"):
+if True or not op.exists(f"/output/long_tract_profiles{do_oab_suffix}.csv"):
     to_long(tp, True).to_csv(f"/output/long_tract_profiles{do_oab_suffix}.csv")
 
 if True or not op.exists(f"/output/age_coefs{do_oab_suffix}.npy"):
