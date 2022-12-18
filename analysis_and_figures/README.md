@@ -15,6 +15,7 @@ For figure 1: first_paper_plots/pheno_histograms.py
 For figure 2: see README in first_paper_plots/figure2
 
 For figure 3: first_paper_plots/bundle_missingness.py
+For the supporting ANOVA: first_paper_plots/missingness_anova.py
 
 For profile plots (figures 4-8):
 
